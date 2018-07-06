@@ -3,7 +3,7 @@
 
 ``` bash
 # clone the repo
-$ git clone -b dev https://github.com/housekeepbao/flightgo_dashboard.git flightgoai-project
+$ git clone -b dev https://github.com/housekeepbao/flightgo_dashboard_frontend_vue.git flightgoai-project
 
 # go into app's directory
 $ cd flightgoai-project
