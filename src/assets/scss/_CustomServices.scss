@@ -1,3 +1,95 @@
 #custom-services {
-  
+  hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 2px solid $hr-light-blue;
+    margin: 1em 0;
+    padding: 0; 
+  }
+  .card-body {
+    padding: 0;
+  }
+  .img-avatar {
+    max-width: 150%;
+  }
+  .list-group-item {
+    padding: 20px 5px;
+    border-left: none;
+    border-right: none;
+  }
+
+  .user-list {
+    padding: 0;
+    .card-body {
+      height: 770px;
+    }
+    ul {
+      display: flex;
+      li {
+        flex: 1;
+      }
+    }
+    .card-header {
+      font-size: 20px;
+      font-weight: bold;
+      border: 1px solid $theme-black;
+      border-bottom: none;
+      background-color: $white;
+    }
+    .nav-link{
+      color: $theme-blue;
+      font-weight: bold;
+      font-size: 16px;
+      border: 1px solid $light-blue;
+      border-bottom: none;
+    }
+    .badge-success {
+      border-radius: 0;
+      padding: 7px 10px;
+      background-color: $theme-green;
+    }
+    .tab-pane {
+      padding: 0;
+    }
+  }
+  .user-content {
+    padding: 0;
+    font-weight: bold;
+    font-size: 16px;
+    .card-header {
+      background-color: $white;
+      .user-name {
+        margin-top: 15px;
+      }
+    }
+    .user-info {
+      padding: 10px;
+      border: 2px solid $light-green;
+      border-radius: 2%;
+      ul {
+        padding: 0;
+        li {
+          list-style-type: none;
+        }
+      }
+      hr {
+        color: $theme-blue;
+      }
+      .like {
+      }
+      .detail {
+        font-size: 18px;
+      }
+    }
+    .user-message {
+      height: 450px;
+    }
+    .user-input {
+      height: 50px;
+    }
+  }
+  .user-other {
+    padding: 0;
+  }
 }
