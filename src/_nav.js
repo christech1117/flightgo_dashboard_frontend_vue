@@ -19,6 +19,31 @@ export default {
       }
     },
     {
+      name: '總覽',
+      url: '/base/summary',
+      icon: 'icon-chart',
+    },  
+    {
+      name: '推播廣告',
+      url: '/base/push-message',
+      icon: 'icon-chart',
+    },  
+    {
+      name: '客服',
+      url: '/base/custom-services',
+      icon: 'icon-chart',
+    },  
+    {
+      name: '使用者分析',
+      url: '/base/analysis',
+      icon: 'icon-graph',
+    },  
+    {
+      name: '對話紀錄系統',
+      url: '/base/user-history',
+      icon: 'icon-bubbles',
+    },
+    {
       name: 'Colors',
       url: '/theme/colors',
       icon: 'icon-drop'

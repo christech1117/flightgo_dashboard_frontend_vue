@@ -58,6 +58,13 @@ const Register = () => import('@/views/pages/Register')
 const Users = () => import('@/views/users/Users')
 const User = () => import('@/views/users/User')
 
+// FlightGo
+const Summary = () => import('@/views/base/Summary')
+const PushMessage = () => import('@/views/base/PushMessage')
+const CustomServices = () => import('@/views/base/CustomServices')
+const Analysis = () => import('@/views/base/Analysis')
+const UserHistory = () => import('@/views/base/UserHistory')
+
 Vue.use(Router)
 
 export default new Router({
@@ -84,6 +91,13 @@ export default new Router({
             render (c) { return c('router-view') }
           },
           children: [
+            // Floghtgo
+            { path: '/base/summary', name: 'Summary', component: Summary },
+            { path: '/base/push-message', name: 'Push Message', component: PushMessage },
+            { path: '/base/custom-services', name: 'Custom Services', component: CustomServices },
+            { path: '/base/analysis', name: 'Analysis', component: Analysis },
+            { path: '/base/user-history', name: 'User History', component: UserHistory },
+            // ========
             {
               path: 'colors',
               name: 'Colors',
