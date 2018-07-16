@@ -7,6 +7,15 @@
     margin: 1em 0;
     padding: 0; 
   }
+  ul {
+    padding: 0;
+    li {
+      list-style-type: none;
+    }
+  }
+  textarea {
+    resize: none;
+  }
   .card-body {
     padding: 0;
   }
@@ -67,26 +76,34 @@
       padding: 10px;
       border: 2px solid $light-green;
       border-radius: 2%;
-      ul {
-        padding: 0;
-        li {
-          list-style-type: none;
-        }
-      }
       hr {
         color: $theme-blue;
-      }
-      .like {
       }
       .detail {
         font-size: 18px;
       }
     }
     .user-message {
-      height: 450px;
+      height: 550px;
+      // font-size: 14px;
+      li {
+        margin: 15px 30px 15px 0;
+        padding: 2px 30px;
+      }
+      img {
+        max-width: 250%;
+        vertical-align: baseline;
+      }
+      .message {
+        margin: 0 20px;
+      }
     }
     .user-input {
       height: 50px;
+    }
+    textarea {
+      border-radius: 0;
+      border-top: 2px solid $hr-light-blue;
     }
   }
   .user-other {
