@@ -171,7 +171,22 @@
         useranme: '',
         isLoadingAchieve: false,
         container: {},
-        chatValue: ''
+        chatValue: '',
+        events = {
+          "newMessage": "new message",
+          "addUser": "add user",
+          "login": "login",
+          "typing": "typing",
+          "stopTyping": "stop typing",
+          "disconnect": "disconnect",
+          "connection": "connection",
+          "userLeft": "user left",
+          "userJoined": "user joined",
+          "customerServiceJoined": "customer service joined",
+          "customerServiceLeft": "customer service left",
+          "pickUp": "pick up",
+          "csConnected": "cs connected"
+        }
       }
     },
     created() {
