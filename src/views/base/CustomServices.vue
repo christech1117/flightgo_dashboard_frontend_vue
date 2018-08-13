@@ -168,7 +168,7 @@ export default {
         users: {},
         infos: []
       },
-      roomId: "",
+      chatRoomId: "",
       customerServicId: "5b4e17e4546347baaf930d8c", //hard code, TODO getCS
       customerServiceName: "曾月青",                 //hard code, TODO getCS
       userId: "",
@@ -193,7 +193,8 @@ export default {
   },
   created() {
     if (!this.getSocket) {
-      this.$store.commit("setGetSocket", io.connect("localhost:3001/"));
+      //this.$store.commit("setGetSocket", io.connect("localhost:3001/"));
+      this.$store.commit("setGetSocket", io.connect("https://www.flightgoai-service.com:8078/"));
     }
   },
   mounted() {
@@ -209,7 +210,7 @@ export default {
     const obj = {
       name: "客服人員",
       // src: getItem('src'),
-      roomId: this.roomId
+      chatRoomId: this.chatRoomId
     };
     this.getSocket.on("message", function(obj) {
       console.log(obj);
@@ -234,7 +235,7 @@ export default {
 
       // TODO : when user send '客服',should create chat room(2ids) in UI (left side)
     });
-
+    
     this.getSocket.on(this.events.userLeft, function(obj) {
       that.$store.commit("setUsers", obj);
     });
@@ -274,7 +275,7 @@ export default {
       this.GetChatMessages(lineUser.chatRoomId);
       this.GetLineUserInfo(lineUser.id);
       this.userContent = true;
-      this.roomId = lineUser.chatRoomId;
+      this.chatRoomId = lineUser.chatRoomId;
       this.userId = lineUser.userId;
       this.userName = lineUser.name;
       this.providerId = lineUser.providerId;
@@ -287,7 +288,7 @@ export default {
         customerServiceId: this.customerServicId,
         customerServiceName: this.customerServiceName,
         name: this.customerServiceName,
-        roomId: this.roomId,
+        chatRoomId: this.chatRoomId,
       };
 
       //
@@ -298,12 +299,12 @@ export default {
         customerServiceId: this.customerServicId,
         customerServiceName: this.customerServiceName,
         name: this.customerServiceName,
-        roomId: this.roomId
+        chatRoomId: this.chatRoomId
       };
       console.log("pick up from CS", pickUpRepsonse);
       //pick up this user
       this.getSocket.emit(this.events.pickUp, pickUpRepsonse);
-      obj.roomId = this.roomId + "_" + this.customerServicId
+      obj.chatRoomId = this.chatRoomId + "_" + this.customerServicId
 
       // 離開房間
       //this.getSocket.emit('logout', obj)
@@ -344,7 +345,7 @@ export default {
           userId: this.userId,
           img: "",
           time: new Date(),
-          roomId: this.roomId,
+          chatRoomId: this.chatRoomId,
           message: this.chatValue
           // src: getItem('src'),
           // msg: this.chatValue,
