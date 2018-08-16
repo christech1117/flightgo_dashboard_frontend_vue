@@ -8,8 +8,9 @@ const getters = {
   getSocket: state => state.socket.socket,
   getInfos: state => state.socket.roomdetail.infos,
   getUsers: state => state.socket.roomdetail.users,
-  // getMessHistoryInfos: state => state.messhistory.infos,
+  // getMessHistoryInfos: state => state.socket.messhistory.infos,
   // getMessHistoryAll: state => state.messhistory.allmessage,
   // getRobotMsg: state => state.robotmsg
+  customerServiceInfo: state => state.login.customerServiceInfo
 }
 export default getters
