@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
-const server = require('../../../vue.config.js').server
+const server = require('../../../vue.config.js').restServer
 const login = {
   state: {
     customerServiceInfo: []

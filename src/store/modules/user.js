@@ -1,5 +1,5 @@
 import axios from 'axios'
-const server = require('../../../vue.config.js').server
+const server = require('../../../vue.config.js').restServer
 
 const user = {
   state: {
