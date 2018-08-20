@@ -1,5 +1,5 @@
 import axios from 'axios'
-const server = require('../../../vue.config.js').restServer
+const server = require('../../config.js').restServer
 const socket = {
   state: {
     socket: '',
