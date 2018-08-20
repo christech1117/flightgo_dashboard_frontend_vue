@@ -1,4 +1,5 @@
 import axios from 'axios'
+const server = require('../../../vue.config.js').server
 
 const user = {
   state: {
@@ -31,10 +32,9 @@ const user = {
     GetLineUsers({ commit }) {
       return new Promise(resolve => {
         axios
-          .get('https://flightgo-backend-dev.herokuapp.com/lineUsers')
+          .get(server + '/lineUsers')
           .then((response) => {
             const data = response.data.rows
-
             commit('GET_LINE_USERS', data)
             resolve()
             
@@ -55,7 +55,7 @@ const user = {
     GetLineUserInfo({ commit }, id) {
       return new Promise(resolve => {
         axios
-          .get('https://flightgo-backend-dev.herokuapp.com/lineUsers/' + id)
+          .get(server + '/lineUsers/' + id)
           .then((response) => {
             const data = response.data
 
@@ -67,7 +67,7 @@ const user = {
     GetProviderInfo({ commit }, providerId) {
       return new Promise(resolve => {
         axios
-          .get('https://flightgo-backend-dev.herokuapp.com/providers/' + providerId)
+          .get(server + '/providers/' + providerId)
           .then((response) => {
             const data = response.data
 
@@ -79,7 +79,7 @@ const user = {
     GetChatMessages({ commit }, chatRoomId) {
       return new Promise(resolve => {
         axios
-          .get('https://flightgo-backend-dev.herokuapp.com/chatmessages/room/' + chatRoomId)
+          .get(server + '/chatmessages/room/' + chatRoomId)
           .then((response) => {
             const data = response.data
 
@@ -91,7 +91,7 @@ const user = {
     SendChatMessage({ commit }) {
       return new Promise(resolve => {
         axios
-          .post('https://flightgo-backend-dev.herokuapp.com/chatmessages', {
+          .post(server + '/chatmessages', {
             id: "5b4c145e2d7d3e00149e7404",
             message: "test message",
             roomId: "U33d4b31a307907a59aa13c46c68e2919_U06bd3288c92b8a0a9ca506440eb2856a",

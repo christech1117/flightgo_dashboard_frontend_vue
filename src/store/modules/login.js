@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
-
+const server = require('../../../vue.config.js').server
 const login = {
   state: {
     customerServiceInfo: []
@@ -16,7 +16,7 @@ const login = {
     }, loginForm) {
       return new Promise(resolve => {
         axios
-          .post('https://flightgo-backend-dev.herokuapp.com/auth', {
+          .post( server + '/auth', {
             access_token: '1gnEhIylRyg3gFe3nXuxhAxZKIbPIZr9'
           }, {
             headers: {

@@ -249,7 +249,8 @@ export default {
       this.GetLineUserInfo(lineUser.id)
       this.userContent = true
       this.chatRoomId = lineUser.chatRoomId
-
+      this.providerId = lineUser.providerId
+      this.userId = lineUser.userId
       const pickUpRepsonse = {
         type: 'customerservice',
         userId: lineUser.userId,

@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+const server = require('../../../vue.config.js').server
 const socket = {
   state: {
     socket: '',
@@ -38,7 +38,7 @@ const socket = {
     getMessHistory({ commit }, chatRoomId) {
       return new Promise(resolve => {
         axios
-          .get('https://flightgo-backend-dev.herokuapp.com/chatmessages/room/' + chatRoomId)
+          .get(server + '/chatmessages/room/' + chatRoomId)
           .then((response) => {
             const data = response.data
             console.log(data)
