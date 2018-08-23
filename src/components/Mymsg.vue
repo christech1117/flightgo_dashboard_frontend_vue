@@ -3,26 +3,28 @@
     <div class="name">
       <!-- <span v-if="mytime">{{getdate}}</span> &nbsp;&nbsp;{{name}} -->
     </div>
-    <div v-if="avatar">
-      <img :src="avatar" alt="" class="img">
-    </div>
+    <img :src="avatar" alt="" class="head">
+    <!-- <div v-if="img">
+      <img :src="img" alt="" class="img">
+    </div> -->
     <span v-if="message">
       {{ message }}
     </span>
   </div>
 </template>
 
-<script type="text/ecmascript-6">
-// import dateFormat from '../utils/date';
+<script>
+// import dateFormat from '../utils/date'
 export default {
   props: ['username', 'avatar', 'message', 'mytime'],
   computed: {
     // getdate() {
-    //   return dateFormat(new Date(this.mytime), 'yyyy-MM-dd HH:mm:ss');
-    // },
+    //   return dateFormat(new Date(this.mytime), 'yyyy-MM-dd HH:mm:ss')
+    // }
   }
 }
 </script>
+
 <style lang="scss" scoped>
 .item {
   margin-top: 10px;
@@ -38,7 +40,7 @@ export default {
   -webkit-animation: show-chat-odd 0.25s 1 ease-in;
   float: right;
   margin-right: 80px;
-  color: #0ad5c1;
+  // color: #0ad5c1;
   .img {
     max-width: 200px;
   }
