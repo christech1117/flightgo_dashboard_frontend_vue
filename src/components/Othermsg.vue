@@ -1,25 +1,28 @@
 <template>
-  <div class="item">
-    <div class="name">
-      <!-- <span v-if="mytime">{{getdate}}</span> &nbsp;&nbsp;{{name}} -->
+  <div class="clear">
+    <div class="item">
+      <div class="name">
+        <!-- <span v-if="mytime">{{getdate}}</span> &nbsp;&nbsp;{{name}} -->
+      </div>
+      <img :src="avatar" alt="" class="head">
+      <!-- <div v-if="img">
+        <img :src="img" alt="" class="img">
+      </div> -->
+      <span v-if="message">
+        {{ message }}
+      </span>
     </div>
-    <div v-if="avatar">
-      <img :src="avatar" alt="" class="img">
-    </div>
-    <span v-if="message">
-      {{ message }}
-    </span>
   </div>
 </template>
 
-<script type="text/ecmascript-6">
-// import dateFormat from '../utils/date';
+<script>
+// import dateFormat from '../utils/date'
 export default {
   props: ['username', 'avatar', 'message', 'mytime'],
   computed: {
     // getdate() {
-    //   return dateFormat(new Date(this.mytime), 'yyyy-MM-dd HH:mm:ss');
-    // },
+    //   return dateFormat(new Date(this.mytime), 'yyyy-MM-dd HH:mm:ss')
+    // }
   }
 }
 </script>
@@ -41,7 +44,7 @@ export default {
     -webkit-animation: show-chat-even 0.25s 1 ease-in;
     float: left;
     margin-left: 80px;
-    color: #0ec879;
+    // color: #0ec879;
 
     .img {
       max-width: 200px;
@@ -91,6 +94,46 @@ export default {
       border-top: 15px solid rgba(25, 147, 147, 0.2);
       border-left: 15px solid transparent;
       left: -15px;
+    }
+  }
+
+  @keyframes show-chat-odd {
+    0% {
+      margin-right: -480px;
+    }
+
+    100% {
+      margin-right: 0;
+    }
+  }
+
+  @keyframes show-chat-even {
+    0% {
+      margin-left: -480px;
+    }
+
+    100% {
+      margin-left: 0;
+    }
+  }
+
+  @keyframes show-chat-even {
+    0% {
+      margin-left: -480px;
+    }
+
+    100% {
+      margin-left: 0;
+    }
+  }
+
+  @keyframes show-chat-even {
+    0% {
+      margin-left: -480px;
+    }
+
+    100% {
+      margin-left: 0;
     }
   }
 }

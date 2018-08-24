@@ -41,7 +41,7 @@
                   <b-badge pill variant="danger">{{ this.inServicies.length }}</b-badge>
                 </template>
                 <b-list-group class="text-left">
-                  <b-list-group-item href="#" v-for="inService in inServicies" :key="inService.id">
+                  <b-list-group-item href="#" v-for="inService in inServicies" :key="inService.id" @click="SelectRoom(inService)">
                     <b-row>
                       <b-col md="3" class="text-center">
                         <div class="avatar">
@@ -105,32 +105,22 @@
             <div id="message" class="user-message">
               <!-- 歷史訊息 -->
               <div v-for="obj in getMessHistoryInfos" :key="obj.id">
-                <!-- <othermsg v-if="obj.username!=username"
-                          :name="obj.username"
-                          :msg="obj.msg"
-                          :img="obj.img"
-                          :mytime="obj.time">
-                </othermsg> -->
-                <mymsg v-if="obj.customerServiceName==username" :username="obj.customerServiceName" :message="obj.message" :avatar="obj.avatar" :mytime="obj.time">
-                </mymsg>
+                <othermsg v-if="obj.type==='user'" :username="obj.name" :message="obj.message" :img="obj.avatar" :mytime="obj.time"></othermsg>
+                <mymsg v-if="obj.type==='customerservice'" :username="obj.customerServiceName" :message="obj.message" :avatar="obj.avatar" :mytime="obj.time"></mymsg>
               </div>
 
               <!-- 對話訊息 -->
               <div v-for="obj in getInfos" :key="obj.id">
-                <!-- <othermsg v-if="obj.username!=username"
-                          :name="obj.username"
-                          :msg="obj.msg"
-                          :img="obj.img"
-                          :mytime="obj.time">
-                </othermsg> -->
-                <mymsg v-if="obj.customerServiceName==username" :username="obj.customerServiceName" :message="obj.message" :avatar="obj.avatar" :mytime="obj.time">
-                </mymsg>
+                <div v-if="obj.chatRoomId===roomdetail.chatRoomId">
+                  <othermsg v-if="obj.type==='user'" :username="obj.name" :message="obj.message" :img="obj.avatar" :mytime="obj.time"></othermsg>
+                  <mymsg v-if="obj.type==='customerservice'" :username="obj.customerServiceName" :message="obj.message" :avatar="obj.avatar" :mytime="obj.time"></mymsg>
+                </div>
               </div>
             </div>
             <input class="form-control" id="comment" v-model="chatValue" placeholder="請輸入訊息" @keyup.enter="SendMessage()" />
-            <b-button pressed block variant="primary" aria-pressed="true" type="submit" @click="SendMessage()">送出
-            </b-button>
-            {{customerServiceInfo}}
+            <b-button pressed block variant="primary" aria-pressed="true" type="submit" @click="SendMessage()">送出</b-button>
+            <!-- logindata: {{ customerServiceInfo }} -->
+            {{ roomdetail }}
           </b-card>
         </b-col>
         <!-- <b-col class="user-other" md="3">
@@ -174,9 +164,14 @@ export default {
       lastMessage: '客服',
       name: '',
       chatRoomId: '',
+      roomdetail: {
+        chatRoomId: '',
+        message: []
+      },
+      messages: [],
 
-      customerServicId: '5b4e17e4546347baaf930d8c', //hard code, TODO getCS
-      customerServiceName: '曾月青', //hard code, TODO getCS
+      customerServicId: '5b4e17e4546347baaf930d8c',
+      customerServiceName: '曾月青',
       userId: '',
       username: '曾月青',
       providerId: '',
@@ -198,24 +193,36 @@ export default {
     this.$store.dispatch('GetLineUsers')
     const that = this
 
-    // 監聽新訊息
+    // 新訊息
     this.getSocket.on(this.events.newMessage, obj => {
-      console.log('newMessage: ', obj)
+      // if (obj.chatRoomId === this.chatRoomId) {
+      this.roomdetail.message.push(obj.message)
+      // this.messages.push(this.roomdetail[obj.chatRoomId])
+      // this.roomdetail.message.push(obj.message)
+      // }
+
+      // console.log(array)
+      // Object.keys(obj).forEach((item, index, array) => {
+      // })
+      console.log(this.roomdetail)
       that.$store.commit('addRoomDetailInfos', obj)
     })
 
-    // 監聽使用者加入房間
+    // 使用者加入房間
     this.getSocket.on(this.events.userJoined, obj => {
+      // console.log(this.obj)
+      // if (obj.message === '客服') {
+      //   this.lineUsers.unshift(obj)
+      // }
       that.$store.commit('setUsers', obj)
     })
 
-    // 監聽使用者離開房間
+    // 使用者離開房間
     this.getSocket.on(this.events.userLeft, obj => {
-      console.log(123)
       that.$store.commit('setUsers', obj)
     })
 
-    // 監聽服務人員加入房間
+    // 服務人員加入房間
     this.getSocket.on(this.events.customerServiceJoined, data => {
       console.log('get customerServiceJoined events', data)
     })
@@ -232,23 +239,22 @@ export default {
       'getSocket',
       'getInfos',
       'getMessHistoryInfos',
-      'getUsers',
-      'customerServiceInfo'
+      'getUsers'
+      // 'customerServiceInfo'
     ])
   },
   methods: {
-    ...mapActions(['GetMessHistory', 'GetLineUserInfo', 'SendChatMessage']),
+    ...mapActions(['GetMessHistory', 'GetLineUserInfo']),
     JoinRoom(lineUser) {
       this.userContent = true
+      this.GetMessHistory(lineUser.chatRoomId) // 取得歷史訊息
+      this.GetLineUserInfo(lineUser.id) // 取得line所有使用者
 
       // 待處理拿掉一筆資料
       const index = this.lineUsers.indexOf(lineUser)
       this.lineUsers.splice(index, 1)
       // 服務中新增一筆資料
       this.inServicies.unshift(lineUser)
-
-      this.GetMessHistory(lineUser.chatRoomId) // 取得歷史訊息
-      this.GetLineUserInfo(lineUser.id) // 取得line所有使用者
 
       this.chatRoomId = lineUser.chatRoomId
       this.providerId = lineUser.providerId
@@ -263,32 +269,24 @@ export default {
         name: this.customerServiceName,
         chatRoomId: this.chatRoomId
       }
-      //pick up this user
+      // pick up this user
       this.getSocket.emit(this.events.pickUp, pickUpRepsonse)
 
       // 離開房間
-      console.log('leave room: ', pickUpRepsonse)
+      // console.log('leave room: ', pickUpRepsonse)
       this.getSocket.emit(this.events.customerServiceLeft, pickUpRepsonse)
-      this.$store.commit('setRoomDetailInfos')
+      // this.$store.commit('setRoomDetailInfos')
 
       // 加入房間
-      console.log('join room: ', pickUpRepsonse)
+      // console.log('join room: ', pickUpRepsonse)
       this.getSocket.emit(this.events.customerServiceJoined, pickUpRepsonse)
       this.chatRoomId = pickUpRepsonse.chatRoomId + '_' + this.customerServicId
     },
-
-    //Data Format
-    // {
-    // type: "customerservice",
-    // providerId: "1597108460",
-    // userId: "U7d9b155b96a70afe8607c227b9768677",
-    // customerServiceId: "5b4e17e4546347baaf930d8c",
-    // roomId: "1597108460_U7d9b155b96a70afe8607c227b9768677_5b4e17e4546347baaf930d8c",
-    // name: "曾月青",
-    // picture: "https://gravatar.com/avatar/53f08004c8f872af684ba2391f25690f?d=identicon",
-    // userName: "曾月青",
-    // message: message
-    // }
+    SelectRoom(inService) {
+      this.userContent = true
+      this.GetMessHistory(inService.chatRoomId) // 取得歷史訊息
+      this.GetLineUserInfo(inService.id) // 取得line所有使用者
+    },
     SendMessage() {
       if (this.chatValue !== '') {
         const obj = {
@@ -297,12 +295,13 @@ export default {
           customerServiceId: this.customerServicId,
           customerServiceName: this.customerServiceName,
           userId: this.userId,
-          avatar: '',
+          avatar:
+            'http://dl.profile.line-cdn.net/0m0e4aece97251c359cd788050c37794d45a22cd7eeabb',
           time: new Date(),
           chatRoomId: this.chatRoomId,
           message: this.chatValue
         }
-        console.log('send message: ', obj)
+        // console.log('send message: ', obj)
         this.getSocket.emit(this.events.newMessage, obj)
         this.chatValue = ''
         this.lastMessage = obj.message

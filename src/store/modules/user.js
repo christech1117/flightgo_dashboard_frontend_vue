@@ -1,5 +1,5 @@
 import axios from 'axios'
-const server = require('../../config.js').restServer
+const server = 'https://www.flightgoai-service.com:9101'
 
 const user = {
   state: {
@@ -20,16 +20,15 @@ const user = {
     GET_PROVIDER_INFO(state, providerInfo) {
       state.providerInfo = providerInfo
     },
-    GET_CHAT_MESSAGES (state, chatMessages) {
-      state.chatMessages = chatMessages
-    },
-    SEND_CHAT_MESSAGE(state, chatMessages) {
+    GET_CHAT_MESSAGES(state, chatMessages) {
       state.chatMessages = chatMessages
     }
   },
 
   actions: {
-    GetLineUsers({ commit }) {
+    GetLineUsers({
+      commit
+    }) {
       return new Promise(resolve => {
         axios
           .get(server + '/lineUsers')
@@ -37,10 +36,10 @@ const user = {
             const data = response.data.rows
             commit('GET_LINE_USERS', data)
             resolve()
-            
+
             // users.forEach(user => {
             //   axios
-            //   .get('https://flightgo-backend-dev.herokuapp.com/chatmessages/room/' + user.chatRoomId + '/lastmessage')
+            //   .get(server + '/' + user.chatRoomId + '/lastmessage')
             //   .then((response) => {
             //     const lastMessage = response.data[0]
             //     const data = Object.assign({}, user, lastMessage);
@@ -49,10 +48,12 @@ const user = {
             //     resolve()
             //   })
             // });
-        })
+          })
       })
     },
-    GetLineUserInfo({ commit }, id) {
+    GetLineUserInfo({
+      commit
+    }, id) {
       return new Promise(resolve => {
         axios
           .get(server + '/lineUsers/' + id)
@@ -61,10 +62,12 @@ const user = {
 
             commit('GET_LINE_USER_INFO', data)
             resolve()
-        })
+          })
       })
     },
-    GetProviderInfo({ commit }, providerId) {
+    GetProviderInfo({
+      commit
+    }, providerId) {
       return new Promise(resolve => {
         axios
           .get(server + '/providers/' + providerId)
@@ -73,10 +76,12 @@ const user = {
 
             commit('GET_LINE_USER_INFO', data)
             resolve()
-        })
+          })
       })
     },
-    GetChatMessages({ commit }, chatRoomId) {
+    GetChatMessages({
+      commit
+    }, chatRoomId) {
       return new Promise(resolve => {
         axios
           .get(server + '/chatmessages/room/' + chatRoomId)
@@ -85,25 +90,7 @@ const user = {
 
             commit('GET_CHAT_MESSAGES', data)
             resolve()
-        })
-      })
-    },
-    SendChatMessage({ commit }) {
-      return new Promise(resolve => {
-        axios
-          .post(server + '/chatmessages', {
-            id: "5b4c145e2d7d3e00149e7404",
-            message: "test message",
-            roomId: "U33d4b31a307907a59aa13c46c68e2919_U06bd3288c92b8a0a9ca506440eb2856a",
-            sender: "U33d4b31a307907a59aa13c46c68e2919",
-            recipient: "U06bd3288c92b8a0a9ca506440eb2856a",
           })
-          .then((response) => {
-            const data = response.data
-
-            commit('SEND_CHAT_MESSAGE', data)
-            resolve()
-        })
       })
     }
   }

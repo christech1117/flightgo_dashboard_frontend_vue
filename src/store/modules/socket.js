@@ -17,11 +17,12 @@ const socket = {
     // 是否開啟tab
     istab: false
   },
-   mutations: {
-    setGetSocket (state, data) {
+  mutations: {
+    setGetSocket(state, data) {
       state.socket = data
     },
     addRoomDetailInfos(state, data) {
+      // state.roomdetail.chatRoomId = data.chatRoomId
       state.roomdetail.infos.push(data)
     },
     setRoomDetailInfos(state) {
@@ -34,17 +35,19 @@ const socket = {
       state.messhistory.infos = data
     },
   },
-   actions: {
-    getMessHistory({ commit }, chatRoomId) {
+  actions: {
+    getMessHistory({
+      commit
+    }, chatRoomId) {
       return new Promise(resolve => {
         axios
           .get(server + '/chatmessages/room/' + chatRoomId)
           .then((response) => {
             const data = response.data
             console.log(data)
-             commit('setMessHistoryInfos', data)
+            commit('setMessHistoryInfos', data)
             resolve()
-        })
+          })
       })
     }
   }
