@@ -1,6 +1,7 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
-const server = require('../../config.js').restServer
+// const server = require('../../config.js').restServer
+const server = 'https://www.flightgoai-service.com:9101'
 const login = {
   state: {
     customerServiceInfo: []

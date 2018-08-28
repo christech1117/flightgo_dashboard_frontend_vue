@@ -1,5 +1,6 @@
 import axios from 'axios'
-const server = require('../../config.js').restServer
+// const server = require('../../config.js').restServer
+const server = 'https://www.flightgoai-service.com:9101'
 const socket = {
   state: {
     socket: '',
