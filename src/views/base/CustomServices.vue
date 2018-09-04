@@ -7,13 +7,13 @@
             <div slot="header">
               客戶列表
             </div>
-            <b-tabs>
-              <b-tab class="tab" active>
-                <template slot="title">
-                  待處理
-                  <b-badge pill variant="danger">{{ this.lineUsers.length }}</b-badge>
+            <el-tabs v-model="activeName" type="card" stretch>
+              <el-tab-pane name="outService">
+                <template slot="label">
+                  <el-badge :value="inServiceCount" class="item">
+                    待處理
+                  </el-badge>
                 </template>
-                
                 <b-list-group class="text-left">
                   <b-list-group-item href="#" v-for="lineUser in lineUsers" :key="lineUser.id" @click="JoinRoom(lineUser, isRead=false)">
                     <b-row>
@@ -35,11 +35,12 @@
                     </b-row>
                   </b-list-group-item>
                 </b-list-group>
-              </b-tab>
-              <b-tab class="tab">
-                <template slot="title">
-                  服務中
-                  <b-badge pill variant="danger">{{ this.inServicies.length }}</b-badge>
+              </el-tab-pane>
+              <el-tab-pane name="inService">
+                <template slot="label">
+                  <el-badge :value="outServiceCount" class="item">
+                    處理中
+                  </el-badge>
                 </template>
                 <b-list-group class="text-left">
                   <b-list-group-item href="#" v-for="inService in inServicies" :key="inService.id" @click="JoinRoom(inService, isRead=true)">
@@ -63,8 +64,8 @@
                     </b-row>
                   </b-list-group-item>
                 </b-list-group>
-              </b-tab>
-            </b-tabs>
+              </el-tab-pane>
+            </el-tabs>
           </b-card>
         </b-col>
         <b-col class="user-content animated fadeIn" md="6" v-show="userContent">
@@ -164,6 +165,9 @@ export default {
       name: '',
       chatRoomId: '',
       messages: [],
+      activeName: 'outService',
+      inServiceCount: 0,
+      outServiceCount: 0,
 
       customerServicId: '5b4e17e4546347baaf930d8c',
       customerServiceName: '曾月青',
@@ -236,6 +240,9 @@ export default {
   updated() {
     const el = document.getElementById('message')
     el.scrollTop = el.scrollHeight
+
+    this.inServiceCount = this.lineUsers.length
+    this.outServiceCount = this.inServicies.length
   },
   computed: {
     ...mapGetters([
@@ -252,6 +259,7 @@ export default {
     ...mapActions(['GetMessHistory', 'GetLineUserInfo']),
     JoinRoom(lineUser, isRead) {
       this.userContent = true
+      this.activeName = 'inService'
       this.GetMessHistory(lineUser.chatRoomId) // 取得歷史訊息
       this.GetLineUserInfo(lineUser.id) // 取得line所有使用者
 
