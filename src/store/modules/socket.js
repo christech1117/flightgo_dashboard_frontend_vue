@@ -4,6 +4,7 @@ const server = 'https://www.flightgoai-service.com:9101'
 const socket = {
   state: {
     socket: '',
+    customerInfo: '',
     // 歷史紀錄
     messhistory: {
       infos: [],
@@ -15,19 +16,21 @@ const socket = {
       users: {},
       infos: []
     },
-    // 是否開啟tab
-    istab: false
+    messages: {}
   },
   mutations: {
     setGetSocket(state, data) {
       state.socket = data
     },
-    addRoomDetailInfos(state, data) {
-      // state.roomdetail.chatRoomId = data.chatRoomId
-      state.roomdetail.infos.push(data)
+    setCustomerInfo(state, data) {
+      state.customerInfo = JSON.parse(data).user
     },
-    setRoomDetailInfos(state) {
-      state.roomdetail.infos = []
+    addRoomDetailInfos(state, data) {
+      state.roomdetail.chatRoomId = data.chatRoomId
+      state.messages[data.chatRoomId].push(data)
+    },
+    setRoomDetailInfos(state, chatRoomId) {
+      state.messages[chatRoomId] = []
     },
     setUsers(state, data) {
       state.roomdetail.users = data
@@ -37,7 +40,7 @@ const socket = {
     },
   },
   actions: {
-    getMessHistory({
+    GetMessHistory({
       commit
     }, chatRoomId) {
       return new Promise(resolve => {
@@ -45,7 +48,6 @@ const socket = {
           .get(server + '/chatmessages/room/' + chatRoomId)
           .then((response) => {
             const data = response.data
-            console.log(data)
             commit('setMessHistoryInfos', data)
             resolve()
           })

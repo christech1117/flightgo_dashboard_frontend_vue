@@ -1,8 +1,9 @@
 <template>
   <AppHeaderDropdown right no-caret>
     <template slot="header">
-      <img src="img/avatars/6.jpg" class="img-avatar" alt="admin@bootstrapmaster.com" />
-    </template>\
+      {{ getCustomerInfo.name }}
+      <img :src="getCustomerInfo.picture" class="img-avatar" :alt="getCustomerInfo.email" />
+    </template>
     <template slot="dropdown">
       <!-- <b-dropdown-header tag="div" class="text-center"><strong>Account</strong></b-dropdown-header>
       <b-dropdown-item><i class="fa fa-bell-o" /> Updates
@@ -33,13 +34,19 @@
       <b-dropdown-divider />
       <b-dropdown-item><i class="fa fa-shield" /> Lock Account</b-dropdown-item> -->
       <b-dropdown-item>
-        <i class="fa fa-lock" /> Logout</b-dropdown-item>
+        <div @click="logout()">
+          <i class="fa fa-lock" /> Logout
+        </div>
+      </b-dropdown-item>
     </template>
   </AppHeaderDropdown>
 </template>
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
+import { mapGetters } from 'vuex'
+import Cookies from 'js-cookie'
+
 export default {
   name: 'DefaultHeaderDropdownAccnt',
   components: {
@@ -47,6 +54,22 @@ export default {
   },
   data: () => {
     return { itemsCount: 42 }
+  },
+  created() {
+    if (Cookies.get('customerServiceInfo')) {
+      this.$store.commit('setCustomerInfo', Cookies.get('customerServiceInfo'))
+    } else {
+      this.$router.push('/pages/login')
+    }
+  },
+  computed: {
+    ...mapGetters(['getCustomerInfo'])
+  },
+  methods: {
+    logout() {
+      Cookies.remove('customerServiceInfo')
+      this.$router.push('/pages/login')
+    }
   }
 }
 </script>

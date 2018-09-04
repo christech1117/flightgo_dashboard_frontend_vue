@@ -17,7 +17,7 @@ const login = {
     }, loginForm) {
       return new Promise(resolve => {
         axios
-          .post( server + '/auth', {
+          .post(server + '/auth', {
             access_token: '1gnEhIylRyg3gFe3nXuxhAxZKIbPIZr9'
           }, {
             headers: {

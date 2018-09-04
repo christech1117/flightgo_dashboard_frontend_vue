@@ -13,8 +13,9 @@
                   待處理
                   <b-badge pill variant="danger">{{ this.lineUsers.length }}</b-badge>
                 </template>
+                
                 <b-list-group class="text-left">
-                  <b-list-group-item href="#" v-for="lineUser in lineUsers" :key="lineUser.id" @click="JoinRoom(lineUser)">
+                  <b-list-group-item href="#" v-for="lineUser in lineUsers" :key="lineUser.id" @click="JoinRoom(lineUser, isRead=false)">
                     <b-row>
                       <b-col md="3" class="text-center">
                         <div class="avatar">
@@ -25,10 +26,10 @@
                         <div>
                           <strong>{{ lineUser.name }}</strong>
                         </div>
-                        <div>{{ lastMessage ? lastMessage : '' }}</div>
+                        <!-- <div>{{ linsUser.lastMessage ? linsUser.lastMessage : '' }}</div> -->
                       </b-col>
                       <b-col md="4" class="float-right">
-                        <strong>下午 03:50</strong>
+                        <strong>7:35 AM</strong>
                         <b-badge variant="success">未回覆訊息</b-badge>
                       </b-col>
                     </b-row>
@@ -41,7 +42,7 @@
                   <b-badge pill variant="danger">{{ this.inServicies.length }}</b-badge>
                 </template>
                 <b-list-group class="text-left">
-                  <b-list-group-item href="#" v-for="inService in inServicies" :key="inService.id" @click="SelectRoom(inService)">
+                  <b-list-group-item href="#" v-for="inService in inServicies" :key="inService.id" @click="JoinRoom(inService, isRead=true)">
                     <b-row>
                       <b-col md="3" class="text-center">
                         <div class="avatar">
@@ -53,11 +54,11 @@
                           <strong>{{ inService.name }}</strong>
                         </div>
                         <div>
-                          <div>{{ lastMessage ? lastMessage : '' }}</div>
+                          <div>{{ inService.lastMessage ? inService.lastMessage : '' }}</div>
                         </div>
                       </b-col>
                       <b-col md="4" class="float-right">
-                        <strong>下午 03:50</strong>
+                        <strong>{{ inService.time }}</strong>
                       </b-col>
                     </b-row>
                   </b-list-group-item>
@@ -97,7 +98,7 @@
                 <li>Email：{{ lineUserInfo.email }}</li>
                 <li>電話：{{ lineUserInfo.phoneNumber }}</li>
                 <li>
-                  <b-button variant="primary" class="btn-pill" @click="complete()">服務完畢
+                  <b-button variant="primary" class="btn-pill" @click="complete(lineUserInfo)">服務完畢
                   </b-button>
                 </li>
               </ul>
@@ -110,17 +111,13 @@
               </div>
 
               <!-- 對話訊息 -->
-              <div v-for="obj in getInfos" :key="obj.id">
-                <div v-if="obj.chatRoomId===roomdetail.chatRoomId">
-                  <othermsg v-if="obj.type==='user'" :username="obj.name" :message="obj.message" :img="obj.avatar" :mytime="obj.time"></othermsg>
-                  <mymsg v-if="obj.type==='customerservice'" :username="obj.customerServiceName" :message="obj.message" :avatar="obj.avatar" :mytime="obj.time"></mymsg>
-                </div>
+              <div v-for="obj in getMessages[this.chatRoomId]" :key="obj.id">
+                <othermsg v-if="obj.type==='user'" :username="obj.name" :message="obj.message" :img="obj.avatar" :mytime="obj.time"></othermsg>
+                <mymsg v-if="obj.type==='customerservice'" :username="obj.customerServiceName" :message="obj.message" :avatar="obj.avatar" :mytime="obj.time"></mymsg>
               </div>
             </div>
             <input class="form-control" id="comment" v-model="chatValue" placeholder="請輸入訊息" @keyup.enter="SendMessage()" />
             <b-button pressed block variant="primary" aria-pressed="true" type="submit" @click="SendMessage()">送出</b-button>
-            <!-- logindata: {{ customerServiceInfo }} -->
-            {{ roomdetail }}
           </b-card>
         </b-col>
         <!-- <b-col class="user-other" md="3">
@@ -140,6 +137,8 @@ import { mapGetters, mapActions } from 'vuex'
 import io from 'socket.io-client'
 import Mymsg from '../../components/Mymsg.vue'
 import Othermsg from '../../components/Othermsg.vue'
+import Cookies from 'js-cookie'
+import moment from 'moment'
 
 const events = {
   newMessage: 'new message',
@@ -161,13 +160,9 @@ export default {
       userContent: false,
       inServicies: [], // 服務中list
       chatValue: '', // 發訊息內容
-      lastMessage: '客服',
+      lastMessage: [],
       name: '',
       chatRoomId: '',
-      roomdetail: {
-        chatRoomId: '',
-        message: []
-      },
       messages: [],
 
       customerServicId: '5b4e17e4546347baaf930d8c',
@@ -187,6 +182,15 @@ export default {
     if (!this.getSocket) {
       this.$store.commit('setGetSocket', io.connect('localhost:3001/'))
       // this.$store.commit("setGetSocket", io.connect("https://www.flightgoai-service.com:8078/"));
+      if (Cookies.get('customerServiceInfo')) {
+        this.$store.commit(
+          'setCustomerInfo',
+          Cookies.get('customerServiceInfo')
+        )
+      } else {
+        // 導向登入頁
+        this.$router.push('/pages/login')
+      }
     }
   },
   mounted() {
@@ -195,25 +199,25 @@ export default {
 
     // 新訊息
     this.getSocket.on(this.events.newMessage, obj => {
-      // if (obj.chatRoomId === this.chatRoomId) {
-      this.roomdetail.message.push(obj.message)
-      // this.messages.push(this.roomdetail[obj.chatRoomId])
-      // this.roomdetail.message.push(obj.message)
-      // }
+      console.log(obj)
+      this.messages.push(obj)
+      // push list lastmessage
+      this.inServicies.forEach(inService => {
+        if (obj.userId === this.userId) {
+          inService.lastMessage = obj.message
+          inService.time = obj.time
+        }
+      })
 
-      // console.log(array)
-      // Object.keys(obj).forEach((item, index, array) => {
-      // })
-      console.log(this.roomdetail)
+      // push message
       that.$store.commit('addRoomDetailInfos', obj)
     })
 
     // 使用者加入房間
     this.getSocket.on(this.events.userJoined, obj => {
-      // console.log(this.obj)
-      // if (obj.message === '客服') {
-      //   this.lineUsers.unshift(obj)
-      // }
+      if (obj.message === '客服') {
+        this.lineUsers.unshift(obj)
+      }
       that.$store.commit('setUsers', obj)
     })
 
@@ -223,38 +227,41 @@ export default {
     })
 
     // 服務人員加入房間
-    this.getSocket.on(this.events.customerServiceJoined, data => {
-      console.log('get customerServiceJoined events', data)
+    this.getSocket.on(this.events.customerServiceJoined, chatRoomId => {
+      that.$store.commit('setRoomDetailInfos', chatRoomId)
+      this.messages[chatRoomId] = []
+      this.messages = []
     })
   },
   updated() {
     const el = document.getElementById('message')
     el.scrollTop = el.scrollHeight
-    // this.lastMessage = this.getInfos[Object.keys(this.getInfos)[Object.keys(this.getInfos).length - 1]]
   },
   computed: {
     ...mapGetters([
       'lineUsers',
       'lineUserInfo',
       'getSocket',
-      'getInfos',
+      'getMessages',
       'getMessHistoryInfos',
-      'getUsers'
-      // 'customerServiceInfo'
+      'getUsers',
+      'getCustomerInfo'
     ])
   },
   methods: {
     ...mapActions(['GetMessHistory', 'GetLineUserInfo']),
-    JoinRoom(lineUser) {
+    JoinRoom(lineUser, isRead) {
       this.userContent = true
       this.GetMessHistory(lineUser.chatRoomId) // 取得歷史訊息
       this.GetLineUserInfo(lineUser.id) // 取得line所有使用者
 
-      // 待處理拿掉一筆資料
-      const index = this.lineUsers.indexOf(lineUser)
-      this.lineUsers.splice(index, 1)
-      // 服務中新增一筆資料
-      this.inServicies.unshift(lineUser)
+      if (!isRead) {
+        // 待處理拿掉一筆資料
+        const index = this.lineUsers.indexOf(lineUser)
+        this.lineUsers.splice(index, 1)
+        // 服務中新增一筆資料
+        this.inServicies.unshift(lineUser)
+      }
 
       this.chatRoomId = lineUser.chatRoomId
       this.providerId = lineUser.providerId
@@ -273,19 +280,11 @@ export default {
       this.getSocket.emit(this.events.pickUp, pickUpRepsonse)
 
       // 離開房間
-      // console.log('leave room: ', pickUpRepsonse)
       this.getSocket.emit(this.events.customerServiceLeft, pickUpRepsonse)
-      // this.$store.commit('setRoomDetailInfos')
 
       // 加入房間
-      // console.log('join room: ', pickUpRepsonse)
       this.getSocket.emit(this.events.customerServiceJoined, pickUpRepsonse)
       this.chatRoomId = pickUpRepsonse.chatRoomId + '_' + this.customerServicId
-    },
-    SelectRoom(inService) {
-      this.userContent = true
-      this.GetMessHistory(inService.chatRoomId) // 取得歷史訊息
-      this.GetLineUserInfo(inService.id) // 取得line所有使用者
     },
     SendMessage() {
       if (this.chatValue !== '') {
@@ -301,16 +300,27 @@ export default {
           chatRoomId: this.chatRoomId,
           message: this.chatValue
         }
-        // console.log('send message: ', obj)
         this.getSocket.emit(this.events.newMessage, obj)
-        this.chatValue = ''
-        this.lastMessage = obj.message
-        this.$nextTick(() => {
-          this.container.scrollTop = 10000
+
+        // push list lastmessage
+        this.inServicies.forEach(data => {
+          if (data.userId === this.userId) {
+            data.lastMessage = this.chatValue
+            data.time = moment(obj.time).format('LT')
+            console.log(data)
+          }
         })
+
+        this.$store.commit('addRoomDetailInfos', obj)
+        // push message
+        this.messages.push(obj)
+        this.chatValue = ''
       }
     },
-    complete() {
+    complete(lineUserInfo) {
+      // 處理中拿掉一筆資料
+      const index = this.lineUsers.indexOf(lineUserInfo)
+      this.lineUsers.splice(index, 1)
       // 服務完畢拿掉該服務中資料
       this.userContent = false
       console.log('服務完畢')

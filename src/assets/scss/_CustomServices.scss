@@ -5,7 +5,7 @@
     border: 0;
     border-top: 2px solid $hr-light-blue;
     margin: 1em 0;
-    padding: 0; 
+    padding: 0;
   }
   ul {
     padding: 0;
@@ -27,7 +27,6 @@
     border-left: none;
     border-right: none;
   }
-
   .user-list {
     padding: 0;
     .card-body {
@@ -46,7 +45,7 @@
       border-bottom: none;
       background-color: $white;
     }
-    .nav-link{
+    .nav-link {
       color: $theme-blue;
       font-weight: bold;
       font-size: 16px;
@@ -84,8 +83,8 @@
       }
     }
     .user-message {
-      height: 550px;
-      // font-size: 14px;
+      height: 435px;
+      overflow: scroll;
       li {
         margin: 15px 30px 15px 0;
         padding: 2px 30px;

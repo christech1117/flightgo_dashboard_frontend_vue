@@ -6,8 +6,8 @@ const user = {
     lineUsers: [],
     lineUserInfo: [],
     providerInfo: [],
-    chatMessages: [],
-    lastMessage: []
+    lastMessage: [],
+    chatHistory: [] // 歷史紀錄
   },
 
   mutations: {
@@ -20,9 +20,9 @@ const user = {
     GET_PROVIDER_INFO(state, providerInfo) {
       state.providerInfo = providerInfo
     },
-    GET_CHAT_MESSAGES(state, chatMessages) {
-      state.chatMessages = chatMessages
-    }
+    setMessHistoryInfos(state, data) {
+      state.chatHistory = data
+    },
   },
 
   actions: {
@@ -79,7 +79,7 @@ const user = {
           })
       })
     },
-    GetChatMessages({
+    GetMessHistory({
       commit
     }, chatRoomId) {
       return new Promise(resolve => {
@@ -87,8 +87,7 @@ const user = {
           .get(server + '/chatmessages/room/' + chatRoomId)
           .then((response) => {
             const data = response.data
-
-            commit('GET_CHAT_MESSAGES', data)
+            commit('setMessHistoryInfos', data)
             resolve()
           })
       })
