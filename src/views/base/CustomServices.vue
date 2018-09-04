@@ -173,6 +173,8 @@ export default {
       customerServiceName: '曾月青',
       userId: '',
       username: '曾月青',
+      avatar:
+        'http://dl.profile.line-cdn.net/0m0e4aece97251c359cd788050c37794d45a22cd7eeabb',
       providerId: '',
       isLoadingAchieve: false,
       container: {}
@@ -203,7 +205,6 @@ export default {
 
     // 新訊息
     this.getSocket.on(this.events.newMessage, obj => {
-      console.log(obj)
       this.messages.push(obj)
       // push list lastmessage
       this.inServicies.forEach(inService => {
@@ -302,8 +303,7 @@ export default {
           customerServiceId: this.customerServicId,
           customerServiceName: this.customerServiceName,
           userId: this.userId,
-          avatar:
-            'http://dl.profile.line-cdn.net/0m0e4aece97251c359cd788050c37794d45a22cd7eeabb',
+          avatar: this.avatar,
           time: new Date(),
           chatRoomId: this.chatRoomId,
           message: this.chatValue
@@ -315,7 +315,6 @@ export default {
           if (data.userId === this.userId) {
             data.lastMessage = this.chatValue
             data.time = moment(obj.time).format('LT')
-            console.log(data)
           }
         })
 
@@ -327,11 +326,10 @@ export default {
     },
     complete(lineUserInfo) {
       // 處理中拿掉一筆資料
-      const index = this.lineUsers.indexOf(lineUserInfo)
-      this.lineUsers.splice(index, 1)
+      const index = this.inServicies.indexOf(lineUserInfo)
+      this.inServicies.splice(index, 1)
       // 服務完畢拿掉該服務中資料
       this.userContent = false
-      console.log('服務完畢')
     }
   }
 }

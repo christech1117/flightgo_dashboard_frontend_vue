@@ -1,6 +1,6 @@
 module.exports = {
   // 基本路徑
-  baseUrl: '/',
+  baseUrl: process.env.NODE_ENV === 'production' ? '/dist' : '/',
   // 輸出文件目錄
   outputDir: 'dist',
   // eslint-loader 是否在保存的時候檢查
@@ -17,13 +17,7 @@ module.exports = {
       .include
       .add(/some-module-to-transpile/) // 要處理的模塊
   },
-  configureWebpack: config => {
-    if (process.env.NODE_ENV === 'production') {
-      // 正式環境
-    } else {
-      // 開發環境
-    }
-  },
+  configureWebpack: () => {},
   // vue-loader 配置項
   // https://vue-loader.vuejs.org/en/options.html
   //   vueLoader: {},
@@ -51,13 +45,11 @@ module.exports = {
   //   pwa: {},
   //   // webpack-dev-server 相關配置
   devServer: {
-    open: process.platform === 'darwin',
     host: '0.0.0.0',
     port: 7070,
     https: false,
     hotOnly: false,
     proxy: null, // 設置代理
-    before: app => {}
   },
   // 第三方插件配置
   // pluginOptions: {
